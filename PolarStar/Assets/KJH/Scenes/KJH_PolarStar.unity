@@ -1913,6 +1913,7 @@ MonoBehaviour:
   r: 200
   temp: {fileID: 8525425187656977890, guid: 4f0a787b3103e1e4b9446afcc3bf9ac3, type: 3}
   isSuccess: 0
+  audioIndex: 5
 --- !u!114 &1186665077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2531,7 +2532,8 @@ MonoBehaviour:
   S_4Image: {fileID: 0}
   S_5Image: {fileID: 0}
   guideState: 0
-  web: {fileID: 0}
+  web: {fileID: 1211156308}
+  rawImage: {fileID: 650875964}
 --- !u!1 &1560525393
 GameObject:
   m_ObjectHideFlags: 0
