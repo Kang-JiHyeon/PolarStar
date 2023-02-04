@@ -35,6 +35,10 @@ public class StarGuide : MonoBehaviour
 
     public WebcamHandler web;
     public RawImage rawImage;
+    public GameObject go_star;
+    public GameObject go_text;
+    KJH_Info info;
+    KJH_PlayAudio playAudio;
 
     // 싱글톤으로 사용
     public static StarGuide Instance;
@@ -55,6 +59,10 @@ public class StarGuide : MonoBehaviour
         S_3Image.enabled = false;
         S_4Image.enabled = false;
         S_5Image.enabled = false;
+
+        info = go_text.transform.GetComponent<KJH_Info>();
+        go_text.SetActive(false);
+        playAudio = go_star.transform.GetComponent<KJH_PlayAudio>();
     }
 
     // Update is called once per frame
@@ -120,10 +128,12 @@ public class StarGuide : MonoBehaviour
         //currentTime += Time.deltaTime;
         S_1Image.enabled = true;
 
+        // 치트키
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             // 통신
             KJH_DrawConstellation.instance.Http();
+            guideState = StarGuide.GuideState.state2;
         }
     }
 
@@ -132,8 +142,13 @@ public class StarGuide : MonoBehaviour
     {
         S_1Image.enabled = false;
         S_2Image.enabled = true;
-        //guideText.text = S_2Text;
-        //guideState = GuideState.state3;
+
+        // 치트키
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            KJH_DrawConstellation.instance.isSuccess = true;
+
+        }
     }
 
     // 별자리를 봐
@@ -150,7 +165,11 @@ public class StarGuide : MonoBehaviour
         {
             S_3Image.enabled = false;
             guideState = GuideState.state4;
-            KJH_AudioPlay.instance.PlaySound(KJH_DrawConstellation.instance.audioIndex);
+
+            playAudio.PlaySound(KJH_DrawConstellation.instance.coIndex);
+            go_text.SetActive(true);
+            info.Init();
+
             currentTime = 0;
         }
     }
@@ -158,8 +177,11 @@ public class StarGuide : MonoBehaviour
     // 오디오 재생 중
     private void state4()
     {
-        S_4Image.enabled = true;
+        //S_4Image.enabled = true;
 
+        //go_text.SetActive(true);
+        //info.Init();
+        //info.IsMove = true;
         //guideText.text = S_4Text;
         // 오디오 끝나면 상태 전이
         // --> 오디오 끝나면 이미지 매쉬 바뀔거임
@@ -173,6 +195,9 @@ public class StarGuide : MonoBehaviour
     // 2번키를 누르면 사진을 찍을 수 있어
     private void state5()
     {
+        go_text.SetActive(false);
+        //info.IsMove = false;
+
         S_5Image.enabled = true;
         //guideText.text = S_5Text;
         // 2번 키를 누르면 idle 상태로 전이

@@ -8,9 +8,6 @@ public class HTTPManager : MonoBehaviour
 {
     public static HTTPManager instance;
 
-
-
-
     private void Awake()
     {
         // 만약에 instacne가 null이라면
@@ -78,7 +75,6 @@ public class HTTPManager : MonoBehaviour
         // 그렇지않다면
         else
         {
-            // 서버통신 실패... ㅠ
             print("통신 실패" + webRequest.result + "\n" + webRequest.error);
         }
         yield return null;

@@ -18,9 +18,10 @@ public class KJH_DrawConstellation : MonoBehaviour
     public List<GameObject> starList = new List<GameObject>();
     public float r; // 천구의 반지름
     public GameObject temp;
-
-    
+    public string coName = "";
+    public int coIndex = 6;
     public bool isSuccess = false;
+
 
     // 별자리 이름
     string[] names = { "양자리", "황소자리", "북두칠성", "카시오페아", "북극성" };
@@ -135,7 +136,6 @@ public class KJH_DrawConstellation : MonoBehaviour
         decList.Add(dec14);
 
 
-
         for (int i = 0; i < raList.Count; i++)
         {
             DrawStarAll(raList[i], decList[i]);
@@ -145,67 +145,40 @@ public class KJH_DrawConstellation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (StarGuide.Instance.guideState == StarGuide.GuideState.state1)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                StarGuide.Instance.guideState = StarGuide.GuideState.state2;
-
-                HTTPRequester hTTPRequester = new HTTPRequester();
-
-                // 음성인식 주소 받기
-                hTTPRequester.url = "https://a5f3-2001-2d8-e294-a769-b91e-b8f0-a69f-1491.jp.ngrok.io/getcord";
-                //hTTPRequester.url = URL.vo;
-                hTTPRequester.requestType = RequestType.GET;
-                hTTPRequester.onComplete = CallBack;
-
-                HTTPManager.instance.SendRequest(hTTPRequester);
-            }
-
-        }
         //통신 테스트
         if (isSuccess)
         {
-            StarRay.instance.transfort(starList[audioIndex]);
-            KJH_StarColorChange.instance.HttpStarColorChange(starList[audioIndex]);
+            StarRay.instance.transfort(starList[coIndex]);
+            KJH_StarColorChange.instance.HttpStarColorChange(starList[coIndex]);
             StarGuide.Instance.guideState = StarGuide.GuideState.state3;
 
             isSuccess = false;
         }
-
     }
 
+    // 서버에 요청
     public void Http()
     {
+        HTTPRequester HttpRequester = new HTTPRequester();
 
-        HTTPRequester hTTPRequester = new HTTPRequester();
+        // 음성인식 요청
+        HttpRequester.url = "https://a5f3-2001-2d8-e294-a769-b91e-b8f0-a69f-1491.jp.ngrok.io/getcord";
+        HttpRequester.requestType = RequestType.GET;
+        HttpRequester.onComplete = CallBack;
 
-        // 음성인식 주소 받기
-        hTTPRequester.url = "https://a5f3-2001-2d8-e294-a769-b91e-b8f0-a69f-1491.jp.ngrok.io/getcord";
-        //hTTPRequester.url = URL.vo;
-        hTTPRequester.requestType = RequestType.GET;
-        hTTPRequester.onComplete = CallBack;
-
-        HTTPManager.instance.SendRequest(hTTPRequester);
-
-        StarGuide.Instance.guideState = StarGuide.GuideState.state2;
+        HTTPManager.instance.SendRequest(HttpRequester);
     }
 
-    // 처녀자리
-    public int audioIndex = 5;
-
+    // 서버에서 응답이 왔을 때 실행되는 함수
     void CallBack(DownloadHandler downloadHandler)
     {
         Constellation co = JsonUtility.FromJson<Constellation>(downloadHandler.text);
-        print(co.name);
-        print(co.index);
-        audioIndex = co.index;
-        //isSuccess = true;
+        coName = co.name;
+        coIndex = co.index;
 
-        KJH_StarColorChange.instance.HttpStarColorChange(starList[co.index]);
+        KJH_StarColorChange.instance.HttpStarColorChange(starList[coIndex]);
         StarGuide.Instance.guideState = StarGuide.GuideState.state3;
-        StarRay.instance.transfort(starList[co.index]);
-
+        StarRay.instance.transfort(starList[coIndex]);
     }
 
     // 모든 별자리 그리기
@@ -232,8 +205,6 @@ public class KJH_DrawConstellation : MonoBehaviour
             float x = rr * Mathf.Sin(ra[i]);
             float y = r * Mathf.Cos(dec[i]);
 
-            // starList[i].transform.position = Vector3.zero + new Vector3(x, y, z);
-            //star.transform.position = new Vector3(x, y, z);
             star.transform.position = Vector3.zero + new Vector3(x, y, z);
         }
     }

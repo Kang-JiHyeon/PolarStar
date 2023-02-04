@@ -11,7 +11,7 @@ public class KJH_AlphaChange : MonoBehaviour
     public bool isColorChange = false;
     Quaternion originRotation;
 
-    KJH_AudioPlay ap;
+    KJH_PlayAudio ap;
     
 
     private void Awake()
@@ -31,7 +31,7 @@ public class KJH_AlphaChange : MonoBehaviour
 
         // alpha º¯°æ
         transform.GetComponent<SpriteRenderer>().color = curColor;
-        ap = GetComponent<KJH_AudioPlay>();
+        ap = GetComponent<KJH_PlayAudio>();
     }
 
     float curTime = 0f;
